@@ -1,0 +1,27 @@
+install.packages("tidyverse")
+library(tidyverse)
+
+scores <- c(61,61,64,68,68,68,71,77,78,79,80,81,82,82,83,85,86,89,90,110)
+
+qplot(x = scores, y = "",  geom = "boxplot")
+
+qplot(y = scores, x = "",  geom = "boxplot", col = I("darkblue") )
+
+#let's put some colour on the inside by adding fill
+
+qplot(y = scores, x = "",  geom = "boxplot", col = I("darkblue"), fill= I("pink") )
+
+#changing the lable on the y axis
+
+qplot(y = scores, x = "",  geom = "boxplot", col = I("darkblue"), fill= I("pink"), ylab= "Poppe" )
+
+#Title to the graph
+
+qplot(y = scores, x = "",  geom = "boxplot", col = I("darkblue"), fill= I("pink"), ylab= "Poppe", main= "Mi piacciono" )
+
+View(chickwts)
+
+qplot(data= chickwts, x= feed, y= weight, fill= feed, geom= "boxplot")
+ 
+
+
