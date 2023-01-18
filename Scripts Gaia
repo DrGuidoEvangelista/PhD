@@ -1,0 +1,39 @@
+library(datasets)
+library(ggplot2)
+library(multcompView)
+library(dplyr)
+library(coin)
+library(gvlma)
+library(stats)
+install.packages("rstatix")
+library(rstatix)
+install.packages("ggpubr")
+library(ggpubr)
+
+str(Schema_pomodori)
+
+
+
+print(Schema_pomodori)
+
+
+
+CM2 %>% 
+  group_by(Line) %>%  
+  get_summary_stats(Weight, type = "common") 
+ggboxplot(CM2, x = "Line", y = "Weight") 
+
+summary(gvlma(Weight ~ Line, data=CM2))
+
+Anova <- aov (Weight ~ Line, CM2) #ese es el one way
+summary(Anova)
+TukeyHSD(Anova)
+
+
+
+stat.test<-CM2 %>% 
+  wilcox_test(Weight ~ Line) %>%  #test di diff significativa (p<0.015)
+  add_significance()
+stat.test
+
+CM2 %>% wilcox_effsize(Weight ~ Line, CM2)
