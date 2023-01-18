@@ -1,0 +1,32 @@
+#Script to make a boxplot from an excel datased
+
+
+library(readxl)
+library(ggplot2)
+library(plyr)
+library(tidyr)
+
+#Function to import the excel file
+CM <-read_excel("PhD/Prova pomodoro 2022/Analisi qualitative frutti/Schema_pomodori.xlsx", sheet= "R")
+
+#Bond the data frame to CM
+CM <- data.frame(CM)
+
+boxplot(CM)
+
+#Change the axis names I guess
+CM2 <- CM %>% 
+  gather(key ="Line", value="Weight")
+
+CM2$Line<-as.factor(CM2$Line)
+
+#Change the order of the lines displayed on the boxplot
+CM2 %>% plyr::mutate (Line=fct_relevel(Line, 'F1', 'F2', 'F3', 'F4', 'F8', 'F9', 'F10', 'F11')) %>%
+ ggplot(aes(x = Line, y= Weight))+ 
+ ylab("Weight (kg)") + xlab("") +   #change the name of the axis (last time)
+ stat_boxplot(geo="errorbar", width=0.25) +
+ geom_boxplot(aes(fill= factor(..middle..)), show.legend = FALSE) +   #colour fill
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+  #change the colours of the background I guess
+  scale_fill_brewer(palette="BuPu")   #palette for the different boxplots (other palettes names are here http://rstudio-pubs-static.s3.amazonaws.com/5312_98fc1aba2d5740dd849a5ab797cc2c8d.html)
+  
