@@ -1,0 +1,35 @@
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+
+df=pd.read_excel('C:/Users/1655821/OneDrive - UAB/Escritorio/python/poppe.xlsx')
+
+
+df['Reg_C_N_int']=df['Reg_C_N'].interpolate()
+df['Reg_C_Ca_int']=df['Reg_C_Ca'].interpolate()
+df['Reg_C_K_int']=df['Reg_C_K'].interpolate()
+df['Reg_C_Mg_int']=df['Reg_C_Mg'].interpolate()
+df['Reg_C_Na_int']=df['Reg_C_Na'].interpolate()
+
+df['Lix_C_N_int']=df['Lix_C_N'].interpolate()
+df['Lix_C_Ca_int']=df['Lix_C_Ca'].interpolate()
+df['Lix_C_K_int']=df['Lix_C_K'].interpolate()
+df['Lix_C_Mg_int']=df['Lix_C_Mg'].interpolate()
+df['Lix_C_Na_int']=df['Lix_C_Na'].interpolate()
+
+df['Reg_E_N_int']=df['Reg_E_N'].interpolate()
+df['Reg_E_Ca_int']=df['Reg_E_Ca'].interpolate()
+df['Reg_E_K_int']=df['Reg_E_K'].interpolate()
+df['Reg_E_Mg_int']=df['Reg_E_Mg'].interpolate()
+df['Reg_E_Na_int']=df['Reg_E_Na'].interpolate()
+
+df['Lix_E_N_int']=df['Lix_E_N'].interpolate()
+df['Lix_E_Ca_int']=df['Lix_E_Ca'].interpolate()
+df['Lix_E_K_int']=df['Lix_E_K'].interpolate()
+df['Lix_E_Mg_int']=df['Lix_E_Mg'].interpolate()
+df['Lix_E_Na_int']=df['Lix_E_Na'].interpolate()
+
+
+
+df.to_csv('C:/Users/1655821/OneDrive - UAB/Escritorio/python/poppe_int.csv', sep='\t')  
