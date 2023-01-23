@@ -30,3 +30,42 @@ CM2 %>% plyr::mutate (Line=fct_relevel(Line, 'F1', 'F2', 'F3', 'F4', 'F8', 'F9',
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+  #change the colours of the background I guess
   scale_fill_brewer(palette="BuPu")   #palette for the different boxplots (other palettes names are here http://rstudio-pubs-static.s3.amazonaws.com/5312_98fc1aba2d5740dd849a5ab797cc2c8d.html)
   
+
+
+
+#correct?#
+
+library(readxl)
+library(ggplot2)
+
+CM <-read_excel("PhD/Prova pomodoro 2022/Analisi qualitative frutti/Schema_pomodori.xlsx", sheet= "R")
+
+CM <- data.frame(CM)
+
+boxplot(CM)
+install.packages("plyr")
+library(plyr)
+
+library(tidyr)
+library(ggplot2)
+
+CM2 <- CM %>% 
+  gather(key ="Line", value="Weight")
+
+CM2$Line<-as.factor(CM2$Line)
+
+library(dplyr)
+install.packages("forcats")
+
+library(forcats)
+
+CM2 %>% plyr::mutate (Line=fct_relevel(Line, 'F1', 'F2', 'F3', 'F4', 'F8', 'F9', 'F10', 'F11')) %>%
+ ggplot(aes(x = Line, y= Weight))+ 
+ ylab("Weight (kg)") + xlab("Lines") +
+ stat_boxplot(geo="errorbar", width=0.25) +
+ geom_boxplot(aes(fill= factor(..middle..)), show.legend = FALSE) + 
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  scale_fill_brewer(palette="BuPu")
+  
+
