@@ -1,0 +1,222 @@
+"""
+Created on Wed Mar  1 14:32:11 2023
+
+@author: 1655821
+"""
+
+"""
+Created on Mon Apr  1 14:29:11 2019
+
+@author: 1485438
+"""
+import pandas as pd
+import numpy as np
+#from matplotlib import pyplot as plt
+#from matplotlib.dates import DateFormatter
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+#import matplotlib.dates as mdates
+import matplotlib as mplt
+
+
+
+
+
+
+
+
+df = pd.read_csv('C:/Campbellsci/LoggerNet/Test 1_Tabla10min.dat', skiprows=[0,2,3,4], header=0,  usecols=['TIMESTAMP','AirTC_1_Avg','AirTC_3_Avg','Hum_Rel_1_Avg','Hum_Rel_3_Avg', 'Hum_Rel_4_Avg'], date_parser=True, low_memory=False, na_values=['NAN'] ) 
+
+df['TIMESTAMP']=pd.to_datetime(df['TIMESTAMP'],format='%Y-%m-%d %H:%M:%S')
+df = df.set_index(pd.DatetimeIndex(df['TIMESTAMP']))
+
+
+df['month'] = pd.DatetimeIndex(df['TIMESTAMP']).month
+df['day'] = pd.DatetimeIndex(df['TIMESTAMP']).day
+
+t1=(df['AirTC_1_Avg']+df['AirTC_3_Avg'])/2 #LAU1
+rh1=(df['Hum_Rel_1_Avg']+df['Hum_Rel_3_Avg'])/2 #HR Interior
+rh2=df['Hum_Rel_4_Avg']#HR Exterior
+
+
+
+times = pd.DatetimeIndex(df['TIMESTAMP']).month
+
+
+FR=576# FINAL RANGE = cuantos datos muestro en el grafico 500 son 5 dias
+
+t1=t1.tail(FR)
+rh1=rh1.tail(FR)
+rh2=rh2.tail(FR)
+
+#r2=r2.tail(FR) #Prueba radiación PAR
+
+
+colors=['r','c','g','b', 'y', 'o', 'p']#Definiciónde color de curbas
+df=df.tail(FR)#Ultimos 500 datos
+
+#dfrad=pd.DataFrame((df['Rad_Solar_3_Avg']*(600/1000000)).groupby(pd.Grouper(freq='D')).sum())#Con esto calculo radiación
+
+pd.pivot_table(df,index=["month", "day"],values=["AirTC_1_Avg"],aggfunc=[np.mean,np.max,np.min, np.std])
+
+
+
+
+
+
+
+dfmean=pd.DataFrame(df.groupby(pd.Grouper(freq='D')).mean())
+dfmax=pd.DataFrame(df.groupby(pd.Grouper(freq='D')).max())
+dfmax = dfmax.drop('TIMESTAMP', axis=1)
+dfmin=pd.DataFrame(df.groupby(pd.Grouper(freq='D')).min())
+dfmin = dfmin.drop('TIMESTAMP', axis=1)
+dfstd=pd.DataFrame(df.groupby(pd.Grouper(freq='D')).std())
+
+
+
+
+
+dfsumary=pd.DataFrame()
+dfsumary['TAvg']=(dfmean['AirTC_1_Avg']+dfmean['AirTC_3_Avg'])/2
+dfsumary['TStd']=(dfstd['AirTC_1_Avg']+dfstd['AirTC_3_Avg'])/2
+dfsumary['T(max+min)/2']=(((dfmax['AirTC_1_Avg']+dfmax['AirTC_3_Avg'])/2)+((dfmin['AirTC_1_Avg']+dfmin['AirTC_3_Avg'])/2))/2
+dfsumary['TMax']=(dfmax['AirTC_1_Avg']+dfmax['AirTC_3_Avg'])/2
+dfsumary['TMin']=(dfmin['AirTC_1_Avg']+dfmin['AirTC_3_Avg'])/2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################## SEGUNDA OPCION ##################################
+
+#
+
+#DIR = 'C:/Users/1485438/Desktop/Doctorado/Pruebas_Python/'
+#Num_inf= len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+#today = datetime.date.today().strftime('%d/%m/%Y')
+#inf= str('Informe Diario Nº'+str(Num_inf) +' ' + str(today))
+#print(inf)
+
+#
+#
+times = df['TIMESTAMP']
+times = times.tail(FR)
+
+
+fig, ax= plt.subplots(figsize=(15,10), dpi=200)
+lns2 = ax.plot(times, rh1, '-b', linewidth=0.7, label = 'Humedad Relativa Interior Viga (%)')#, color='deepskyblue')
+lns3 = ax.plot(times, rh2, '-p', linewidth=0.7, label= 'Humedad Relativa Exterior (%)')#, color='purple') #Prueba radiación PAR
+ax2 = ax.twinx()
+lns1 = ax2.plot(times, t1, '-r', linewidth=0.7, label = 'Temperatura promedio \n LAU 1 ($^\circ$C)')
+
+
+lns = lns1+lns2+lns3
+for line in lns:
+      line.set_marker(None)
+labs = [l.get_label() for l in lns]
+
+ax.grid()
+ax.set_xlabel("Dias")
+ax.set_ylabel(r"Humedad Relativa (%)")
+ax2.set_ylabel(r"Temperature ($^\circ$C)")
+ax2.set_ylim(10, 40)
+ax.set_ylim(0,120)
+plt.axhline(18, color = 'g', linewidth=1, linestyle=":")
+plt.axhline(25, color = 'g', linewidth=1, linestyle=":")
+plt.axhline(30, color = 'r', linewidth=0.7, linestyle=":")
+
+
+
+for ax in fig.axes:
+    mplt.pyplot.sca(ax)
+    ax.xaxis.set_major_locator(mdates.HourLocator(interval=6))#Aca se determina cada cuantas horas se ve en el grafico!
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M %d/%m'))
+    plt.xticks(rotation=30)
+    
+    
+
+ax.legend(lns, labs, loc=2)
+fig.savefig('C:/Users/1655821/OneDrive - UAB/Documentos/PhD/Tomates_2023/Immagini_Campbellsci/T_and_RH.png', format= 'png')
+
+plt.show()
+#
+#
+############################## SEGUNDA OPCION ##################################
+#
+#
+#
+#import time
+#import datetime
+#from reportlab.lib.enums import TA_JUSTIFY
+#from reportlab.lib.pagesizes import letter
+#from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+#from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+#from reportlab.lib.units import inch
+#from reportlab.pdfgen import canvas
+#import os, os.path
+#
+#
+#
+#
+#DIR = 'C:/Users/1485438/Desktop/Doctorado/Pruebas_Python/'
+#Num_inf= len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+#today = datetime.date.today().strftime('%d/%m/%Y')
+#inf= str('Informe Diario Nº'+str(Num_inf) +' ' + str(today))
+#print(inf)
+# 
+#canvas = canvas.Canvas("form.pdf", pagesize=letter)
+#canvas.setLineWidth(.3)
+#canvas.setFont('Helvetica', 12)
+#
+#gra= 'C:/Users/1485438/Desktop/Doctorado/Pruebas_Python/Estado Alfa/Fig.png'
+#A=13
+#canvas.drawImage(gra,-20,200,A*1.7142857142857142*cm, A *cm)
+#
+#print('Ingrese comentarios generales (sea breve)')
+#gen_com=input(str())
+#
+#canvas.drawString(10,715,'Comentarios generales: '+gen_com)
+#
+#canvas.line(10,690,600,690) 
+#
+#
+#print('Cambio Importantes (sea breve)')
+#camb=input(str())
+#
+#if camb=="":
+#    camb="Ninguno" 
+#else: camb=camb
+#canvas.drawString(10,650,'Cambio Importantes: '+camb)
+#
+#canvas.line(10,650,600,650) 
+#
+#
+#
+#
+#
+#canvas.drawImage('C:/Users/1485438/Desktop/Doctorado/Pruebas_Python/sost.png',250,740,4*cm,1.5*cm)
+#
+#canvas.line(10,730,600,730) 
+#canvas.drawString(30,750,inf)
+#canvas.drawString(440,760,'Realizado por Verónica Arcas /')
+#canvas.drawString(518,748,'Martí Rufí')
+#canvas.drawString(518,736,'Felipe Parada')
+#
+#
+#
+#
+#canvas.save()
+#
+#
