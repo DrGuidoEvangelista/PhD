@@ -1,0 +1,61 @@
+#press ctrl alt and i to break a chunk
+
+
+
+str(bio1)  #function to view the structure of the file
+
+summary(bio1) #function to view the statistical summary of the file (average values, maximum vale etc.)
+
+s <- summary(bio1)    #to assign a simplier character to the summary function and make it shorter
+
+bio1[,2]
+bio1$MU         #ways to display the second column: 2 is the second column of the datased while MU is the name of the column
+
+#to select and view column 2 and row 3 of bio1:
+bio1[3,2]
+bio1$MU[3]  #this will display a single value in the cell 
+
+
+#to display the length of column Concentration of the file bio1:
+length(bio1$Concentration)
+
+
+#creating a new column in which we convert the values in factors 
+bio1$Treatment2 <- as.factor(bio1$Treatment)
+#so if we write this line
+summary(bio1)
+#we can see that in the Treatment2 column there are x Algae and y NoAlgae (basically it counted the data)
+
+#create a new column with the division between the Concentration column and Mesocosm
+bio1$Concentration4 <- bio1$Concentration/bio1$Mesocosm
+
+
+bio1[(bio1$ID < 10),]  #the dataset will only take the data from the row ID which are <10
+
+
+bio5 <- bio1[,-8]  #in this way I removed the 8th column from the database displayed
+
+bio3[bio3$Abundance==0,]
+bio3$abundance_cat  <- -1   in this way I created a new column and assigned a rule
+
+bio3$abundance_cat[bio3$Abundance==0] <- 0  #when in the Abundance column the values are 0, also in the new column abundance_cat the values will be 0
+
+
+
+#c function to combine objects
+bio1.small<-bio1[,c(1,6)] 
+bio1.small<-bio1[,c("ID","Concentration")]  #this is the way to select these 2 columns in the same way
+
+bio1.small<-bio1[,1:6]   #in order to select all the columns from 1 to 6
+
+
+rep(1:6, 5)
+rep(1:6, each=5)  #tools to create sequences
+
+
+##Combining data frames
+
+#adding rows - the two datased need to have the same number of columns 
+bio12 <- rbind(bio1,bio2)
+
+#avoid merging cells in excel 
