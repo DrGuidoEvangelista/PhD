@@ -61,3 +61,55 @@ rep(1:6, each=5)  #tools to create sequences
 bio12 <- rbind(bio1,bio2)
 
 #avoid merging cells in excel 
+
+
+
+#### THIRD LESSON ####
+
+
+################## Descriptive statistics ##################
+### categorical variables (graph)
+barplot(table(bio$Treatment),xlab="Treatment",ylab="n") 
+barplot(prop.table(table(bio$Treatment)),xlab="Treatment",ylab="%")
+
+### quantitative variables (graph)
+hist(bio$Concentration,col="blue",ylab="n")
+hist(bio$Concentration,freq=FALSE,col="dodgerblue1", ylab="%")
+
+freq=FALSE #you won't use frequency but percentage
+na.rm=TRUE #not available data will be removed -> missing values in the database have to be removed to make operations 
+
+bio$Concentration2 <- bio$Concentration
+bio$Concentration2[1] <- NA
+mean(bio$Concentration2,na.rm=FALSE)  #with this function we can see the effect of a missing value
+
+#In case I have many missing value, I can input them and assign a value
+
+
+numSummary(bio[,"Concentration"], statistics=c("mean", "sd"))
+numSummary(bio$Concentration, statistics=c("mean", "sd"))   #two same functions that display mean and sd of the column Concentration
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
