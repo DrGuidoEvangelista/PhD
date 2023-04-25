@@ -1,0 +1,54 @@
+#install.packages("tidyverse")
+install.packages("tidyverse")
+library(tidyverse)
+library(lubridate)
+library(dplyr)
+library(readxl)
+library(readr)
+df_camp <- data.frame()
+df_camp <- read_csv("C:/Campbellsci/LoggerNet/Test 1_Tabla24h.dat", col_names =T, na="", skip = 1 )
+df_camp<-df_camp[-c(1,2),]
+df_camp['AirTC_3_Avg']<-as.numeric(df_camp$AirTC_3_Avg)
+df_camp['AirTC_1_Avg']<-as.numeric(df_camp$AirTC_1_Avg)
+med_temp<-(df_camp['AirTC_3_Avg']+df_camp['AirTC_1_Avg'])/2
+
+med_temp<-unlist(tail(med_temp,1))
+
+#calculo de variables
+
+GLM_T_raw <- readRDS("C:/Users/1655821/OneDrive - UAB/Documentos/PhD/Tomates_2023/modelo_felipe.rds")
+
+ET0_ICTA_2023<-(predict(GLM_T_raw, data.frame(Mean_T_LAU1=med_temp)))**(-1)
+
+#Calculo de riego
+
+
+M2_planta<-0.556 # metros cuadrados por planta
+preciptacion<-2/M2_planta # en milimetros
+
+#sacado para aplicar modelo en 2021
+#dia<- format(now(), "%d/%m/%Y")
+#df_Kc<- read_xlsx("C:/Users/1655821/OneDrive - UAB/Documentos/PhD/Tomates_2023/Kc_23.xlsx", sheet= "Hoja1")
+
+#Kc<-with(df_Kc, df_Kc[Day == dia,15]
+
+
+
+#med_temp<-21.86
+
+ET0_ICTA_2023<-(predict(GLM_T_raw, data.frame(Mean_T_LAU1=med_temp)))**(-1)
+
+Kc<-0.93
+
+TR<- (ET0_ICTA_2023*Kc)/preciptacion
+TR_min<-TR*60
+
+print("El tiempo de riego sin Kc es ")
+print((ET0_ICTA_2023/preciptacion)*60)
+print("El Kc es ")
+print(Kc)
+print(TR_min)
+
+cat("Temperatura media de ayer fue",med_temp,"ºC", "\nKc",unlist(Kc), "\nEl tiempo de riego es",unlist(round(TR_min,1)), "min","\nEl tiempo de riego total considerando 20% extra de agua es",unlist(round(TR_min*1.2,1)),"\n","Volumen de riego aprox con el 20% más es de ",unlist(round(TR_min*1.2*171*2/60,1)),"litros")
+
+cat("Temperatura media de ayer fue",med_temp,"ºC", "\nKc",unlist(Kc), "min","\n","Volumen de riego aprox ",unlist(round(TR_min*1.2*114*2/60,1)),"litros")
