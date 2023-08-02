@@ -1,0 +1,70 @@
+#Questo script mi e' servito a fare il grafico per il poster dell' ECIU con 4 bar plots per i 4 trattamenti del pomodoro
+
+
+
+
+library(ggplot2)
+library(viridis)
+library(hrbrthemes)
+
+# Your provided data
+treatment <- rep(c("Arawak Control", "Arawak Struvite", "Montgrì Control", "Montgrì Struvite"), each = 5)
+result <- rep(c("Very bad", "Bad", "Neutral", "Good", "Very good"), times = 4)
+percentage <- c(0.7,
+                9.2,
+                33.3,
+                36.2,
+                20.6,
+                1.4,
+                7.1,
+                29.8,
+                39.7,
+                22.0,
+                2.1,
+                12.1,
+                32.6,
+                36.9,
+                16.3,
+                0.0,
+                4.3,
+                26.2,
+                46.1,
+                23.4)
+
+data <- data.frame(treatment, result, percentage)
+
+# Reorder "result" factor levels to match the desired order
+data$result <- factor(data$result, levels = c("Very bad", "Bad", "Neutral", "Good", "Very good"))
+
+custom_colors <- c(
+  "Very bad" = "#34a853",    # Green
+  "Bad" = "yellowgreen",         # Light green
+  "Neutral" = "#FDE725FF",     # Yellow
+  "Good" = "#FFA500",          # Orange
+  "Very good" = "#ea4335"      # Red
+)
+
+# Graph
+p <- ggplot(data, aes(fill=result, y=percentage, x=result)) + 
+  geom_bar(position="dodge", stat="identity") +
+  scale_fill_manual(values = custom_colors) +
+  facet_wrap(~treatment, strip.position = "top") +  # Place facet labels at the top
+  theme_ipsum() +
+  theme(legend.position="none") +
+  xlab("Texture") +
+  ylab("Percentage") +
+  ggtitle("Tomato texture") +
+  theme(panel.grid.minor.x  = element_blank(), panel.grid.minor.y = element_blank(),
+        panel.grid.major.x  = element_blank(), panel.grid.major.y = element_blank())+
+  theme(panel.background = element_rect(color= "black", fill= NA),
+    strip.text = element_text(hjust = 0.5)) +
+  theme(axis.title.x=element_text(size= 12, hjust=0.5, vjust= -4),
+        axis.title.y=element_text(size=12, hjust=0.5)) +
+  theme(
+        plot.title = element_text(hjust = 0.5, face="bold"),
+        plot.margin = margin(1, 1, 1, 1, "cm")) +
+  theme(strip.text.y = element_text(margin = margin(0, 0, 10, 0)))
+
+p_with_labels <- p + geom_text(aes(label = paste0(percentage, "%"), y = percentage + 2), vjust = 0) +
+  coord_cartesian(ylim = c(0, 50))  # Set y-axis limit to 50%
+print(p_with_labels)
