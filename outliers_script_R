@@ -1,0 +1,27 @@
+# Data: Spinach harvest values
+
+#add the list of your data here
+data <- c(2.9425, 2.015, 2.0125, 3.0125, 2.5275, 2.61, 2.48, 2.7675, 2.405, 2.905, 
+          2.495, 2.7175, 1.44, 0.11, 0.72, 1.32)
+
+# Calculate Q1 (25th percentile) and Q3 (75th percentile)
+Q1 <- quantile(data, 0.25)
+Q3 <- quantile(data, 0.75)
+
+# Calculate IQR
+IQR_value <- Q3 - Q1
+
+# Define bounds for outliers
+lower_bound <- max(Q1 - 1.5 * IQR_value, 0) # Lower bound, corrected to avoid negative values
+upper_bound <- Q3 + 1.5 * IQR_value
+
+# Identify outliers
+outliers <- data[data < lower_bound | data > upper_bound]
+
+# Print results
+cat("Q1:", Q1, "\n")
+cat("Q3:", Q3, "\n")
+cat("IQR:", IQR_value, "\n")
+cat("Lower bound:", lower_bound, "\n")
+cat("Upper bound:", upper_bound, "\n")
+cat("Outliers:", outliers, "\n")
